@@ -1,0 +1,7 @@
+out/
+*.class
+*.db
+fuentes.txt
+.idea/
+.vscode/
+*.iml

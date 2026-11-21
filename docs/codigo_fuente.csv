@@ -1,0 +1,358 @@
+﻿archivo,linea,codigo
+src/co/edu/iudigital/conexion/ConexionTester.java,1,package co.edu.iudigital.conexion;
+src/co/edu/iudigital/conexion/ConexionTester.java,2,
+src/co/edu/iudigital/conexion/ConexionTester.java,3,import java.awt.BorderLayout;
+src/co/edu/iudigital/conexion/ConexionTester.java,4,import java.awt.Color;
+src/co/edu/iudigital/conexion/ConexionTester.java,5,import java.awt.Dimension;
+src/co/edu/iudigital/conexion/ConexionTester.java,6,import java.awt.Font;
+src/co/edu/iudigital/conexion/ConexionTester.java,7,import java.awt.GridLayout;
+src/co/edu/iudigital/conexion/ConexionTester.java,8,import java.awt.event.ActionEvent;
+src/co/edu/iudigital/conexion/ConexionTester.java,9,import java.awt.event.ActionListener;
+src/co/edu/iudigital/conexion/ConexionTester.java,10,import java.sql.Connection;
+src/co/edu/iudigital/conexion/ConexionTester.java,11,import java.sql.DatabaseMetaData;
+src/co/edu/iudigital/conexion/ConexionTester.java,12,import java.sql.DriverManager;
+src/co/edu/iudigital/conexion/ConexionTester.java,13,import java.sql.SQLException;
+src/co/edu/iudigital/conexion/ConexionTester.java,14,import java.util.Arrays;
+src/co/edu/iudigital/conexion/ConexionTester.java,15,
+src/co/edu/iudigital/conexion/ConexionTester.java,16,import javax.swing.BorderFactory;
+src/co/edu/iudigital/conexion/ConexionTester.java,17,import javax.swing.JButton;
+src/co/edu/iudigital/conexion/ConexionTester.java,18,import javax.swing.JFrame;
+src/co/edu/iudigital/conexion/ConexionTester.java,19,import javax.swing.JLabel;
+src/co/edu/iudigital/conexion/ConexionTester.java,20,import javax.swing.JPanel;
+src/co/edu/iudigital/conexion/ConexionTester.java,21,import javax.swing.JPasswordField;
+src/co/edu/iudigital/conexion/ConexionTester.java,22,import javax.swing.JScrollPane;
+src/co/edu/iudigital/conexion/ConexionTester.java,23,import javax.swing.JTextArea;
+src/co/edu/iudigital/conexion/ConexionTester.java,24,import javax.swing.JTextField;
+src/co/edu/iudigital/conexion/ConexionTester.java,25,import javax.swing.SwingUtilities;
+src/co/edu/iudigital/conexion/ConexionTester.java,26,import javax.swing.UIManager;
+src/co/edu/iudigital/conexion/ConexionTester.java,27,import javax.swing.WindowConstants;
+src/co/edu/iudigital/conexion/ConexionTester.java,28,
+src/co/edu/iudigital/conexion/ConexionTester.java,29,/**
+src/co/edu/iudigital/conexion/ConexionTester.java,30, * ConexionTester: aplicación de escritorio (Swing) que permite escribir los datos de una
+src/co/edu/iudigital/conexion/ConexionTester.java,31, * base de datos y comprobar si la conexión JDBC funciona.
+src/co/edu/iudigital/conexion/ConexionTester.java,32, *
+src/co/edu/iudigital/conexion/ConexionTester.java,33, * Organización (programación orientada a objetos):
+src/co/edu/iudigital/conexion/ConexionTester.java,34," *  - La clase ES la ventana (hereda de JFrame) y es dueña de sus componentes, que son privados"
+src/co/edu/iudigital/conexion/ConexionTester.java,35, *    (encapsulamiento): nadie fuera de la clase puede cambiarlos.
+src/co/edu/iudigital/conexion/ConexionTester.java,36, *  - La construcción de la interfaz está separada de la lógica de conexión.
+src/co/edu/iudigital/conexion/ConexionTester.java,37," *  - La lógica de conexión está en {@link #probarConexion}, un método estático que no toca la"
+src/co/edu/iudigital/conexion/ConexionTester.java,38, *    interfaz: recibe datos y devuelve un {@link Resultado}. Así se puede probar sin ventana.
+src/co/edu/iudigital/conexion/ConexionTester.java,39, *  - El evento del botón lo atiende una clase interna que implementa ActionListener.
+src/co/edu/iudigital/conexion/ConexionTester.java,40, */
+src/co/edu/iudigital/conexion/ConexionTester.java,41,public final class ConexionTester extends JFrame {
+src/co/edu/iudigital/conexion/ConexionTester.java,42,
+src/co/edu/iudigital/conexion/ConexionTester.java,43,    private static final long serialVersionUID = 1L;
+src/co/edu/iudigital/conexion/ConexionTester.java,44,
+src/co/edu/iudigital/conexion/ConexionTester.java,45,"    private static final Color VERDE = new Color(0, 128, 0);"
+src/co/edu/iudigital/conexion/ConexionTester.java,46,"    private static final Color ROJO = new Color(192, 0, 0);"
+src/co/edu/iudigital/conexion/ConexionTester.java,47,"    private static final Color GRIS = new Color(80, 80, 80);"
+src/co/edu/iudigital/conexion/ConexionTester.java,48,
+src/co/edu/iudigital/conexion/ConexionTester.java,49,"    private static final String URL_EJEMPLO = ""jdbc:sqlite:inventario.db"";"
+src/co/edu/iudigital/conexion/ConexionTester.java,50,    private static final int TIEMPO_ESPERA_SEGUNDOS = 5;
+src/co/edu/iudigital/conexion/ConexionTester.java,51,
+src/co/edu/iudigital/conexion/ConexionTester.java,52,    // Componentes de la interfaz (privados: encapsulamiento)
+src/co/edu/iudigital/conexion/ConexionTester.java,53,    private final JTextField campoUrl = new JTextField(URL_EJEMPLO);
+src/co/edu/iudigital/conexion/ConexionTester.java,54,    private final JTextField campoUsuario = new JTextField();
+src/co/edu/iudigital/conexion/ConexionTester.java,55,    private final JPasswordField campoClave = new JPasswordField();
+src/co/edu/iudigital/conexion/ConexionTester.java,56,"    private final JButton botonProbar = new JButton(""Probar conexión"");"
+src/co/edu/iudigital/conexion/ConexionTester.java,57,    private final JTextArea areaResultado = new JTextArea();
+src/co/edu/iudigital/conexion/ConexionTester.java,58,
+src/co/edu/iudigital/conexion/ConexionTester.java,59,    /** Resultado inmutable de una prueba de conexión: si funcionó y el mensaje para mostrar. */
+src/co/edu/iudigital/conexion/ConexionTester.java,60,"    record Resultado(boolean exitoso, String mensaje) { }"
+src/co/edu/iudigital/conexion/ConexionTester.java,61,
+src/co/edu/iudigital/conexion/ConexionTester.java,62,    // ------------------------------------------------------------------
+src/co/edu/iudigital/conexion/ConexionTester.java,63,"    // 1. Interfaz gráfica (JFrame, JPanel, layouts, componentes)"
+src/co/edu/iudigital/conexion/ConexionTester.java,64,    // ------------------------------------------------------------------
+src/co/edu/iudigital/conexion/ConexionTester.java,65,
+src/co/edu/iudigital/conexion/ConexionTester.java,66,    public ConexionTester() {
+src/co/edu/iudigital/conexion/ConexionTester.java,67,"        super(""ConexionTester - Prueba de conexión JDBC"");"
+src/co/edu/iudigital/conexion/ConexionTester.java,68,        configurarVentana();
+src/co/edu/iudigital/conexion/ConexionTester.java,69,        setContentPane(construirPanelPrincipal());
+src/co/edu/iudigital/conexion/ConexionTester.java,70,        registrarEventos();
+src/co/edu/iudigital/conexion/ConexionTester.java,71,        mostrarMensajeInicial();
+src/co/edu/iudigital/conexion/ConexionTester.java,72,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,73,
+src/co/edu/iudigital/conexion/ConexionTester.java,74,    private void configurarVentana() {
+src/co/edu/iudigital/conexion/ConexionTester.java,75,        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+src/co/edu/iudigital/conexion/ConexionTester.java,76,"        setSize(680, 440);"
+src/co/edu/iudigital/conexion/ConexionTester.java,77,"        setMinimumSize(new Dimension(560, 380));"
+src/co/edu/iudigital/conexion/ConexionTester.java,78,        setLocationRelativeTo(null); // centrada en la pantalla
+src/co/edu/iudigital/conexion/ConexionTester.java,79,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,80,
+src/co/edu/iudigital/conexion/ConexionTester.java,81,    /** Panel principal con BorderLayout: formulario arriba y resultado en el centro. */
+src/co/edu/iudigital/conexion/ConexionTester.java,82,    private JPanel construirPanelPrincipal() {
+src/co/edu/iudigital/conexion/ConexionTester.java,83,"        JPanel principal = new JPanel(new BorderLayout(0, 12));"
+src/co/edu/iudigital/conexion/ConexionTester.java,84,"        principal.setBorder(BorderFactory.createEmptyBorder(14, 16, 14, 16));"
+src/co/edu/iudigital/conexion/ConexionTester.java,85,"        principal.add(construirPanelSuperior(), BorderLayout.NORTH);"
+src/co/edu/iudigital/conexion/ConexionTester.java,86,"        principal.add(construirPanelResultado(), BorderLayout.CENTER);"
+src/co/edu/iudigital/conexion/ConexionTester.java,87,        return principal;
+src/co/edu/iudigital/conexion/ConexionTester.java,88,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,89,
+src/co/edu/iudigital/conexion/ConexionTester.java,90,    /** Formulario (GridLayout de 3 filas x 2 columnas) y botón. */
+src/co/edu/iudigital/conexion/ConexionTester.java,91,    private JPanel construirPanelSuperior() {
+src/co/edu/iudigital/conexion/ConexionTester.java,92,"        JPanel formulario = new JPanel(new GridLayout(3, 2, 10, 10));"
+src/co/edu/iudigital/conexion/ConexionTester.java,93,"        formulario.add(new JLabel(""URL de conexión:""));"
+src/co/edu/iudigital/conexion/ConexionTester.java,94,        formulario.add(campoUrl);
+src/co/edu/iudigital/conexion/ConexionTester.java,95,"        formulario.add(new JLabel(""Nombre de usuario (vacío si es SQLite):""));"
+src/co/edu/iudigital/conexion/ConexionTester.java,96,        formulario.add(campoUsuario);
+src/co/edu/iudigital/conexion/ConexionTester.java,97,"        formulario.add(new JLabel(""Contraseña (vacía si es SQLite):""));"
+src/co/edu/iudigital/conexion/ConexionTester.java,98,        formulario.add(campoClave);
+src/co/edu/iudigital/conexion/ConexionTester.java,99,
+src/co/edu/iudigital/conexion/ConexionTester.java,100,"        campoUrl.setToolTipText(""Ejemplo: "" + URL_EJEMPLO);"
+src/co/edu/iudigital/conexion/ConexionTester.java,101,
+src/co/edu/iudigital/conexion/ConexionTester.java,102,        JPanel panelBoton = new JPanel(new BorderLayout());
+src/co/edu/iudigital/conexion/ConexionTester.java,103,"        botonProbar.setPreferredSize(new Dimension(180, 34));"
+src/co/edu/iudigital/conexion/ConexionTester.java,104,"        panelBoton.add(botonProbar, BorderLayout.EAST);"
+src/co/edu/iudigital/conexion/ConexionTester.java,105,
+src/co/edu/iudigital/conexion/ConexionTester.java,106,"        JPanel superior = new JPanel(new BorderLayout(0, 12));"
+src/co/edu/iudigital/conexion/ConexionTester.java,107,"        superior.add(formulario, BorderLayout.CENTER);"
+src/co/edu/iudigital/conexion/ConexionTester.java,108,"        superior.add(panelBoton, BorderLayout.SOUTH);"
+src/co/edu/iudigital/conexion/ConexionTester.java,109,        return superior;
+src/co/edu/iudigital/conexion/ConexionTester.java,110,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,111,
+src/co/edu/iudigital/conexion/ConexionTester.java,112,    /** JTextArea dentro de un JScrollPane para mostrar el resultado de la prueba. */
+src/co/edu/iudigital/conexion/ConexionTester.java,113,    private JScrollPane construirPanelResultado() {
+src/co/edu/iudigital/conexion/ConexionTester.java,114,        areaResultado.setEditable(false);
+src/co/edu/iudigital/conexion/ConexionTester.java,115,        areaResultado.setLineWrap(true);
+src/co/edu/iudigital/conexion/ConexionTester.java,116,        areaResultado.setWrapStyleWord(true);
+src/co/edu/iudigital/conexion/ConexionTester.java,117,"        areaResultado.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));"
+src/co/edu/iudigital/conexion/ConexionTester.java,118,"        areaResultado.setMargin(new java.awt.Insets(8, 10, 8, 10));"
+src/co/edu/iudigital/conexion/ConexionTester.java,119,
+src/co/edu/iudigital/conexion/ConexionTester.java,120,        JScrollPane desplazable = new JScrollPane(areaResultado);
+src/co/edu/iudigital/conexion/ConexionTester.java,121,"        desplazable.setBorder(BorderFactory.createTitledBorder(""Resultado de la prueba""));"
+src/co/edu/iudigital/conexion/ConexionTester.java,122,        return desplazable;
+src/co/edu/iudigital/conexion/ConexionTester.java,123,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,124,
+src/co/edu/iudigital/conexion/ConexionTester.java,125,    private void registrarEventos() {
+src/co/edu/iudigital/conexion/ConexionTester.java,126,        botonProbar.addActionListener(new ManejadorProbarConexion());
+src/co/edu/iudigital/conexion/ConexionTester.java,127,        getRootPane().setDefaultButton(botonProbar); // Enter también prueba la conexión
+src/co/edu/iudigital/conexion/ConexionTester.java,128,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,129,
+src/co/edu/iudigital/conexion/ConexionTester.java,130,    private void mostrarMensajeInicial() {
+src/co/edu/iudigital/conexion/ConexionTester.java,131,        areaResultado.setForeground(GRIS);
+src/co/edu/iudigital/conexion/ConexionTester.java,132,"        areaResultado.setText(""Escriba los datos de conexión y pulse \""Probar conexión\""."");"
+src/co/edu/iudigital/conexion/ConexionTester.java,133,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,134,
+src/co/edu/iudigital/conexion/ConexionTester.java,135,    // ------------------------------------------------------------------
+src/co/edu/iudigital/conexion/ConexionTester.java,136,    // 2. Evento del botón (ActionListener)
+src/co/edu/iudigital/conexion/ConexionTester.java,137,    // ------------------------------------------------------------------
+src/co/edu/iudigital/conexion/ConexionTester.java,138,
+src/co/edu/iudigital/conexion/ConexionTester.java,139,"    /** Atiende el clic en ""Probar conexión"": lee los campos, prueba y muestra el resultado. */"
+src/co/edu/iudigital/conexion/ConexionTester.java,140,    private class ManejadorProbarConexion implements ActionListener {
+src/co/edu/iudigital/conexion/ConexionTester.java,141,        @Override
+src/co/edu/iudigital/conexion/ConexionTester.java,142,        public void actionPerformed(ActionEvent evento) {
+src/co/edu/iudigital/conexion/ConexionTester.java,143,            String url = campoUrl.getText().trim();
+src/co/edu/iudigital/conexion/ConexionTester.java,144,            String usuario = campoUsuario.getText().trim();
+src/co/edu/iudigital/conexion/ConexionTester.java,145,
+src/co/edu/iudigital/conexion/ConexionTester.java,146,            // getPassword() devuelve char[]: se borra de memoria apenas se usa.
+src/co/edu/iudigital/conexion/ConexionTester.java,147,            char[] clave = campoClave.getPassword();
+src/co/edu/iudigital/conexion/ConexionTester.java,148,            Resultado resultado;
+src/co/edu/iudigital/conexion/ConexionTester.java,149,            try {
+src/co/edu/iudigital/conexion/ConexionTester.java,150,"                resultado = probarConexion(url, usuario, new String(clave));"
+src/co/edu/iudigital/conexion/ConexionTester.java,151,            } finally {
+src/co/edu/iudigital/conexion/ConexionTester.java,152,"                Arrays.fill(clave, '\0');"
+src/co/edu/iudigital/conexion/ConexionTester.java,153,            }
+src/co/edu/iudigital/conexion/ConexionTester.java,154,            mostrarResultado(resultado);
+src/co/edu/iudigital/conexion/ConexionTester.java,155,        }
+src/co/edu/iudigital/conexion/ConexionTester.java,156,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,157,
+src/co/edu/iudigital/conexion/ConexionTester.java,158,    /** Verde si la conexión funcionó; rojo si falló. */
+src/co/edu/iudigital/conexion/ConexionTester.java,159,    private void mostrarResultado(Resultado resultado) {
+src/co/edu/iudigital/conexion/ConexionTester.java,160,        areaResultado.setForeground(resultado.exitoso() ? VERDE : ROJO);
+src/co/edu/iudigital/conexion/ConexionTester.java,161,        areaResultado.setText(resultado.mensaje());
+src/co/edu/iudigital/conexion/ConexionTester.java,162,        areaResultado.setCaretPosition(0);
+src/co/edu/iudigital/conexion/ConexionTester.java,163,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,164,
+src/co/edu/iudigital/conexion/ConexionTester.java,165,    // ------------------------------------------------------------------
+src/co/edu/iudigital/conexion/ConexionTester.java,166,"    // 3. Lógica de conexión JDBC (DriverManager, excepciones, cierre seguro)"
+src/co/edu/iudigital/conexion/ConexionTester.java,167,    // ------------------------------------------------------------------
+src/co/edu/iudigital/conexion/ConexionTester.java,168,
+src/co/edu/iudigital/conexion/ConexionTester.java,169,    /**
+src/co/edu/iudigital/conexion/ConexionTester.java,170,     * Intenta abrir una conexión con DriverManager y devuelve el resultado.
+src/co/edu/iudigital/conexion/ConexionTester.java,171,"     * No depende de la interfaz gráfica, por eso se puede probar por separado."
+src/co/edu/iudigital/conexion/ConexionTester.java,172,     */
+src/co/edu/iudigital/conexion/ConexionTester.java,173,"    static Resultado probarConexion(String url, String usuario, String clave) {"
+src/co/edu/iudigital/conexion/ConexionTester.java,174,        if (url == null || url.isBlank()) {
+src/co/edu/iudigital/conexion/ConexionTester.java,175,"            return new Resultado(false,"
+src/co/edu/iudigital/conexion/ConexionTester.java,176,"                    ""ENTRADA NO VÁLIDA\n\nEscriba la URL de conexión, por ejemplo: "" + URL_EJEMPLO);"
+src/co/edu/iudigital/conexion/ConexionTester.java,177,        }
+src/co/edu/iudigital/conexion/ConexionTester.java,178,
+src/co/edu/iudigital/conexion/ConexionTester.java,179,        DriverManager.setLoginTimeout(TIEMPO_ESPERA_SEGUNDOS);
+src/co/edu/iudigital/conexion/ConexionTester.java,180,        String claseDriver = resolverDriver(url);
+src/co/edu/iudigital/conexion/ConexionTester.java,181,
+src/co/edu/iudigital/conexion/ConexionTester.java,182,        try {
+src/co/edu/iudigital/conexion/ConexionTester.java,183,            if (claseDriver != null) {
+src/co/edu/iudigital/conexion/ConexionTester.java,184,                Class.forName(claseDriver); // lanza ClassNotFoundException si falta el .jar del driver
+src/co/edu/iudigital/conexion/ConexionTester.java,185,            }
+src/co/edu/iudigital/conexion/ConexionTester.java,186,
+src/co/edu/iudigital/conexion/ConexionTester.java,187,"            // try-with-resources: la conexión se cierra sola, tanto si todo sale bien como si hay error."
+src/co/edu/iudigital/conexion/ConexionTester.java,188,"            try (Connection conexion = DriverManager.getConnection(url, usuario, clave)) {"
+src/co/edu/iudigital/conexion/ConexionTester.java,189,                DatabaseMetaData datos = conexion.getMetaData();
+src/co/edu/iudigital/conexion/ConexionTester.java,190,"                return new Resultado(true, ""CONEXIÓN EXITOSA\n\n"""
+src/co/edu/iudigital/conexion/ConexionTester.java,191,"                        + ""URL:            "" + url + ""\n"""
+src/co/edu/iudigital/conexion/ConexionTester.java,192,"                        + ""Base de datos:  "" + datos.getDatabaseProductName()"
+src/co/edu/iudigital/conexion/ConexionTester.java,193,"                        + "" "" + datos.getDatabaseProductVersion() + ""\n"""
+src/co/edu/iudigital/conexion/ConexionTester.java,194,"                        + ""Driver JDBC:    "" + datos.getDriverName()"
+src/co/edu/iudigital/conexion/ConexionTester.java,195,"                        + "" "" + datos.getDriverVersion() + ""\n\n"""
+src/co/edu/iudigital/conexion/ConexionTester.java,196,"                        + ""La conexión se cerró automáticamente (try-with-resources)."");"
+src/co/edu/iudigital/conexion/ConexionTester.java,197,            }
+src/co/edu/iudigital/conexion/ConexionTester.java,198,
+src/co/edu/iudigital/conexion/ConexionTester.java,199,        } catch (ClassNotFoundException e) {
+src/co/edu/iudigital/conexion/ConexionTester.java,200,"            return new Resultado(false, ""FALLO DEL DRIVER\n\n"""
+src/co/edu/iudigital/conexion/ConexionTester.java,201,"                    + ""No se encontró la clase del driver: "" + e.getMessage() + ""\n"""
+src/co/edu/iudigital/conexion/ConexionTester.java,202,"                    + ""Agregue el archivo .jar del driver al classpath (carpeta lib) y vuelva a intentarlo."");"
+src/co/edu/iudigital/conexion/ConexionTester.java,203,
+src/co/edu/iudigital/conexion/ConexionTester.java,204,        } catch (SQLException e) {
+src/co/edu/iudigital/conexion/ConexionTester.java,205,"            return new Resultado(false, ""FALLO DE CONEXIÓN\n\n"""
+src/co/edu/iudigital/conexion/ConexionTester.java,206,"                    + ""Mensaje técnico: "" + e.getMessage() + ""\n"""
+src/co/edu/iudigital/conexion/ConexionTester.java,207,"                    + ""SQLState: "" + (e.getSQLState() == null ? ""no disponible"" : e.getSQLState()) + ""\n"""
+src/co/edu/iudigital/conexion/ConexionTester.java,208,"                    + ""Código de error: "" + e.getErrorCode());"
+src/co/edu/iudigital/conexion/ConexionTester.java,209,        }
+src/co/edu/iudigital/conexion/ConexionTester.java,210,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,211,
+src/co/edu/iudigital/conexion/ConexionTester.java,212,"    /** Devuelve el nombre de la clase del driver según el tipo de URL, o null si no se reconoce. */"
+src/co/edu/iudigital/conexion/ConexionTester.java,213,    static String resolverDriver(String url) {
+src/co/edu/iudigital/conexion/ConexionTester.java,214,"        if (url.startsWith(""jdbc:sqlite:"")) {"
+src/co/edu/iudigital/conexion/ConexionTester.java,215,"            return ""org.sqlite.JDBC"";"
+src/co/edu/iudigital/conexion/ConexionTester.java,216,        }
+src/co/edu/iudigital/conexion/ConexionTester.java,217,"        if (url.startsWith(""jdbc:mysql:"")) {"
+src/co/edu/iudigital/conexion/ConexionTester.java,218,"            return ""com.mysql.cj.jdbc.Driver"";"
+src/co/edu/iudigital/conexion/ConexionTester.java,219,        }
+src/co/edu/iudigital/conexion/ConexionTester.java,220,"        if (url.startsWith(""jdbc:postgresql:"")) {"
+src/co/edu/iudigital/conexion/ConexionTester.java,221,"            return ""org.postgresql.Driver"";"
+src/co/edu/iudigital/conexion/ConexionTester.java,222,        }
+src/co/edu/iudigital/conexion/ConexionTester.java,223,"        if (url.startsWith(""jdbc:h2:"")) {"
+src/co/edu/iudigital/conexion/ConexionTester.java,224,"            return ""org.h2.Driver"";"
+src/co/edu/iudigital/conexion/ConexionTester.java,225,        }
+src/co/edu/iudigital/conexion/ConexionTester.java,226,"        return null; // DriverManager responderá con SQLException (""No suitable driver"")"
+src/co/edu/iudigital/conexion/ConexionTester.java,227,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,228,
+src/co/edu/iudigital/conexion/ConexionTester.java,229,    // ------------------------------------------------------------------
+src/co/edu/iudigital/conexion/ConexionTester.java,230,    // Punto de entrada
+src/co/edu/iudigital/conexion/ConexionTester.java,231,    // ------------------------------------------------------------------
+src/co/edu/iudigital/conexion/ConexionTester.java,232,
+src/co/edu/iudigital/conexion/ConexionTester.java,233,    public static void main(String[] args) {
+src/co/edu/iudigital/conexion/ConexionTester.java,234,        try {
+src/co/edu/iudigital/conexion/ConexionTester.java,235,            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+src/co/edu/iudigital/conexion/ConexionTester.java,236,        } catch (Exception e) {
+src/co/edu/iudigital/conexion/ConexionTester.java,237,"            // Si no se puede usar el aspecto del sistema, Swing usa el suyo por defecto."
+src/co/edu/iudigital/conexion/ConexionTester.java,238,        }
+src/co/edu/iudigital/conexion/ConexionTester.java,239,        SwingUtilities.invokeLater(() -> new ConexionTester().setVisible(true));
+src/co/edu/iudigital/conexion/ConexionTester.java,240,    }
+src/co/edu/iudigital/conexion/ConexionTester.java,241,}
+src/co/edu/iudigital/conexion/PruebasConexion.java,1,package co.edu.iudigital.conexion;
+src/co/edu/iudigital/conexion/PruebasConexion.java,2,
+src/co/edu/iudigital/conexion/PruebasConexion.java,3,import java.io.FileDescriptor;
+src/co/edu/iudigital/conexion/PruebasConexion.java,4,import java.io.FileOutputStream;
+src/co/edu/iudigital/conexion/PruebasConexion.java,5,import java.io.IOException;
+src/co/edu/iudigital/conexion/PruebasConexion.java,6,import java.io.PrintStream;
+src/co/edu/iudigital/conexion/PruebasConexion.java,7,import java.nio.charset.StandardCharsets;
+src/co/edu/iudigital/conexion/PruebasConexion.java,8,import java.nio.file.Files;
+src/co/edu/iudigital/conexion/PruebasConexion.java,9,import java.nio.file.Path;
+src/co/edu/iudigital/conexion/PruebasConexion.java,10,import java.util.List;
+src/co/edu/iudigital/conexion/PruebasConexion.java,11,import java.util.function.Predicate;
+src/co/edu/iudigital/conexion/PruebasConexion.java,12,
+src/co/edu/iudigital/conexion/PruebasConexion.java,13,/**
+src/co/edu/iudigital/conexion/PruebasConexion.java,14, * Pruebas de la lógica de conexión sin interfaz gráfica y sin frameworks externos.
+src/co/edu/iudigital/conexion/PruebasConexion.java,15, * Cada escenario compara el resultado obtenido con el esperado y muestra OK o FALLO.
+src/co/edu/iudigital/conexion/PruebasConexion.java,16, *
+src/co/edu/iudigital/conexion/PruebasConexion.java,17, * Uso: probar.bat  (Windows)  |  ./probar.sh  (Linux / macOS)
+src/co/edu/iudigital/conexion/PruebasConexion.java,18, */
+src/co/edu/iudigital/conexion/PruebasConexion.java,19,public final class PruebasConexion {
+src/co/edu/iudigital/conexion/PruebasConexion.java,20,
+src/co/edu/iudigital/conexion/PruebasConexion.java,21,"    private record Escenario(String nombre, String url, Predicate<ConexionTester.Resultado> cumple, String esperado) { }"
+src/co/edu/iudigital/conexion/PruebasConexion.java,22,
+src/co/edu/iudigital/conexion/PruebasConexion.java,23,    private PruebasConexion() { }
+src/co/edu/iudigital/conexion/PruebasConexion.java,24,
+src/co/edu/iudigital/conexion/PruebasConexion.java,25,    public static void main(String[] args) throws IOException {
+src/co/edu/iudigital/conexion/PruebasConexion.java,26,"        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out), true, StandardCharsets.UTF_8));"
+src/co/edu/iudigital/conexion/PruebasConexion.java,27,
+src/co/edu/iudigital/conexion/PruebasConexion.java,28,"        Path carpeta = Files.createTempDirectory(""conexiontester"");"
+src/co/edu/iudigital/conexion/PruebasConexion.java,29,"        String archivoTemporal = carpeta.resolve(""prueba.db"").toString().replace('\\', '/');"
+src/co/edu/iudigital/conexion/PruebasConexion.java,30,
+src/co/edu/iudigital/conexion/PruebasConexion.java,31,        List<Escenario> escenarios = List.of(
+src/co/edu/iudigital/conexion/PruebasConexion.java,32,"                new Escenario(""1. SQLite en memoria"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,33,"                        ""jdbc:sqlite::memory:"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,34,"                        r -> r.exitoso() && r.mensaje().startsWith(""CONEXIÓN EXITOSA""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,35,"                        ""CONEXIÓN EXITOSA""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,36,"                new Escenario(""2. SQLite en un archivo (se crea si no existe)"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,37,"                        ""jdbc:sqlite:"" + archivoTemporal,"
+src/co/edu/iudigital/conexion/PruebasConexion.java,38,"                        r -> r.exitoso() && r.mensaje().startsWith(""CONEXIÓN EXITOSA""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,39,"                        ""CONEXIÓN EXITOSA""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,40,"                new Escenario(""3. SQLite con una carpeta que no existe (SQLException)"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,41,"                        ""jdbc:sqlite:/carpeta/que/no/existe/inventario.db"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,42,"                        r -> !r.exitoso() && r.mensaje().startsWith(""FALLO DE CONEXIÓN""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,43,"                        ""FALLO DE CONEXIÓN""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,44,"                new Escenario(""4. MySQL sin el driver en el classpath (ClassNotFoundException)"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,45,"                        ""jdbc:mysql://localhost:3306/inventario"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,46,"                        r -> !r.exitoso() && r.mensaje().startsWith(""FALLO DEL DRIVER""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,47,"                        ""FALLO DEL DRIVER""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,48,"                new Escenario(""5. URL que ningún driver reconoce (SQLException)"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,49,"                        ""abc"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,50,"                        r -> !r.exitoso() && r.mensaje().startsWith(""FALLO DE CONEXIÓN""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,51,"                        ""FALLO DE CONEXIÓN""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,52,"                new Escenario(""6. URL vacía (validación de entrada)"","
+src/co/edu/iudigital/conexion/PruebasConexion.java,53,"                        ""   "","
+src/co/edu/iudigital/conexion/PruebasConexion.java,54,"                        r -> !r.exitoso() && r.mensaje().startsWith(""ENTRADA NO VÁLIDA""),"
+src/co/edu/iudigital/conexion/PruebasConexion.java,55,"                        ""ENTRADA NO VÁLIDA""));"
+src/co/edu/iudigital/conexion/PruebasConexion.java,56,
+src/co/edu/iudigital/conexion/PruebasConexion.java,57,"        System.out.println(""="".repeat(78));"
+src/co/edu/iudigital/conexion/PruebasConexion.java,58,"        System.out.println(""PRUEBAS DE LA LÓGICA DE CONEXIÓN (ConexionTester.probarConexion)"");"
+src/co/edu/iudigital/conexion/PruebasConexion.java,59,"        System.out.println(""="".repeat(78));"
+src/co/edu/iudigital/conexion/PruebasConexion.java,60,
+src/co/edu/iudigital/conexion/PruebasConexion.java,61,        int correctas = 0;
+src/co/edu/iudigital/conexion/PruebasConexion.java,62,        for (Escenario e : escenarios) {
+src/co/edu/iudigital/conexion/PruebasConexion.java,63,"            ConexionTester.Resultado r = ConexionTester.probarConexion(e.url(), """", """");"
+src/co/edu/iudigital/conexion/PruebasConexion.java,64,            boolean ok = e.cumple().test(r);
+src/co/edu/iudigital/conexion/PruebasConexion.java,65,            if (ok) {
+src/co/edu/iudigital/conexion/PruebasConexion.java,66,                correctas++;
+src/co/edu/iudigital/conexion/PruebasConexion.java,67,            }
+src/co/edu/iudigital/conexion/PruebasConexion.java,68,"            System.out.printf(""%n[%s] %s%n"", ok ? ""OK"" : ""FALLO"", e.nombre());"
+src/co/edu/iudigital/conexion/PruebasConexion.java,69,"            System.out.println(""      URL probada : \"""" + e.url() + ""\"""");"
+src/co/edu/iudigital/conexion/PruebasConexion.java,70,"            System.out.println(""      Esperado    : "" + e.esperado());"
+src/co/edu/iudigital/conexion/PruebasConexion.java,71,"            System.out.println(""      Obtenido    : "" + primeraLinea(r.mensaje()));"
+src/co/edu/iudigital/conexion/PruebasConexion.java,72,"            System.out.println(""      Detalle     : "" + tercerLinea(r.mensaje()));"
+src/co/edu/iudigital/conexion/PruebasConexion.java,73,        }
+src/co/edu/iudigital/conexion/PruebasConexion.java,74,
+src/co/edu/iudigital/conexion/PruebasConexion.java,75,"        System.out.printf(""%nResultado: %d de %d pruebas correctas%n"", correctas, escenarios.size());"
+src/co/edu/iudigital/conexion/PruebasConexion.java,76,    }
+src/co/edu/iudigital/conexion/PruebasConexion.java,77,
+src/co/edu/iudigital/conexion/PruebasConexion.java,78,    private static String primeraLinea(String texto) {
+src/co/edu/iudigital/conexion/PruebasConexion.java,79,        int salto = texto.indexOf('\n');
+src/co/edu/iudigital/conexion/PruebasConexion.java,80,"        return salto < 0 ? texto : texto.substring(0, salto);"
+src/co/edu/iudigital/conexion/PruebasConexion.java,81,    }
+src/co/edu/iudigital/conexion/PruebasConexion.java,82,
+src/co/edu/iudigital/conexion/PruebasConexion.java,83,"    /** El mensaje tiene el formato: título, línea en blanco, detalle. Devuelve el detalle. */"
+src/co/edu/iudigital/conexion/PruebasConexion.java,84,    private static String tercerLinea(String texto) {
+src/co/edu/iudigital/conexion/PruebasConexion.java,85,"        String[] lineas = texto.split(""\n"");"
+src/co/edu/iudigital/conexion/PruebasConexion.java,86,"        return lineas.length > 2 ? lineas[2] : """";"
+src/co/edu/iudigital/conexion/PruebasConexion.java,87,    }
+src/co/edu/iudigital/conexion/PruebasConexion.java,88,}
+ejecutar.bat,1,@echo off
+ejecutar.bat,2,chcp 65001 >nul
+ejecutar.bat,3,rem Compila y abre la ventana de ConexionTester (requiere JDK 17 o superior).
+ejecutar.bat,4,if exist out rmdir /s /q out
+ejecutar.bat,5,mkdir out
+ejecutar.bat,6,javac --release 17 -encoding UTF-8 -d out src\co\edu\iudigital\conexion\ConexionTester.java src\co\edu\iudigital\conexion\PruebasConexion.java
+ejecutar.bat,7,if errorlevel 1 exit /b 1
+ejecutar.bat,8,"java -Dfile.encoding=UTF-8 -cp ""out;lib\*"" co.edu.iudigital.conexion.ConexionTester"
+probar.bat,1,@echo off
+probar.bat,2,chcp 65001 >nul
+probar.bat,3,rem Compila y ejecuta las pruebas de la logica de conexion (requiere JDK 17 o superior).
+probar.bat,4,if exist out rmdir /s /q out
+probar.bat,5,mkdir out
+probar.bat,6,javac --release 17 -encoding UTF-8 -d out src\co\edu\iudigital\conexion\ConexionTester.java src\co\edu\iudigital\conexion\PruebasConexion.java
+probar.bat,7,if errorlevel 1 exit /b 1
+probar.bat,8,"java -Dfile.encoding=UTF-8 -cp ""out;lib\*"" co.edu.iudigital.conexion.PruebasConexion"
+ejecutar.sh,1,#!/usr/bin/env bash
+ejecutar.sh,2,# Compila y abre la ventana de ConexionTester (requiere JDK 17 o superior).
+ejecutar.sh,3,set -e
+ejecutar.sh,4,rm -rf out && mkdir out
+ejecutar.sh,5,javac --release 17 -encoding UTF-8 -d out src/co/edu/iudigital/conexion/*.java
+ejecutar.sh,6,"java -Dfile.encoding=UTF-8 -cp ""out:lib/*"" co.edu.iudigital.conexion.ConexionTester"
+probar.sh,1,#!/usr/bin/env bash
+probar.sh,2,# Compila y ejecuta las pruebas de la logica de conexion (requiere JDK 17 o superior).
+probar.sh,3,set -e
+probar.sh,4,rm -rf out && mkdir out
+probar.sh,5,javac --release 17 -encoding UTF-8 -d out src/co/edu/iudigital/conexion/*.java
+probar.sh,6,"java -Dfile.encoding=UTF-8 -cp ""out:lib/*"" co.edu.iudigital.conexion.PruebasConexion"
